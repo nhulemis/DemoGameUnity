@@ -26,7 +26,7 @@ public class ButtonHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         m_isHoldingBuilding = false;
         // m_startLine = GameObject.FindGameObjectWithTag("Line");
         m_treeBase = GameObject.FindGameObjectWithTag("TreeBase");
-        m_buildingBase = GameObject.FindGameObjectWithTag("Building");
+        m_buildingBase = GameObject.FindGameObjectWithTag("BuildingType3");
     }
     public void CreateTree()
     {
@@ -90,7 +90,9 @@ public class ButtonHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         }
         else if (m_isHoldingBuilding)
         {
-            m_cube.GetComponent<Collider>().attachedRigidbody.useGravity = true;
+            var collider = m_cube.GetComponent<Collider>();
+           var body = collider.attachedRigidbody;
+            body.useGravity = true;
             m_isHoldingBuilding = false;
         }
     }
