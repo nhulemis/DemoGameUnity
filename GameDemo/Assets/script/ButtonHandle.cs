@@ -25,8 +25,8 @@ public class ButtonHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         m_isHoldingTree = false;
         m_isHoldingBuilding = false;
         // m_startLine = GameObject.FindGameObjectWithTag("Line");
-        m_treeBase = GameObject.FindGameObjectWithTag("TreeBase");
-        m_buildingBase = GameObject.FindGameObjectWithTag("BuildingType3");
+        RandomNextTypeWooden();
+        RandomNextTypeBuilding();
     }
     public void CreateTree()
     {
@@ -44,7 +44,7 @@ public class ButtonHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void CreateBuilding()
     {
-        Debug.Log("Building");
+        //Debug.Log("Building");
         m_cube = Instantiate(m_buildingBase);
         m_cube.transform.position = GetMouseWorldPosition();
     }
@@ -87,6 +87,7 @@ public class ButtonHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         {
             m_tree.GetComponent<Collider>().attachedRigidbody.useGravity = true;
             m_isHoldingTree = false;
+            RandomNextTypeWooden();
         }
         else if (m_isHoldingBuilding)
         {
@@ -94,6 +95,42 @@ public class ButtonHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
            var body = collider.attachedRigidbody;
             body.useGravity = true;
             m_isHoldingBuilding = false;
+            RandomNextTypeBuilding();
+        }
+    }
+
+    private void RandomNextTypeBuilding()
+    {
+        int type = Random.Range(1, 4);
+        //Debug.Log("Type: " + type);
+        switch (type)
+        {
+            case 1:
+                m_buildingBase = GameObject.FindGameObjectWithTag("BuildingType1");
+                break;
+            case 2:
+                m_buildingBase = GameObject.FindGameObjectWithTag("BuildingType2");
+                break;
+            case 3:
+                m_buildingBase = GameObject.FindGameObjectWithTag("BuildingType3");
+                break;
+        }
+    }
+    private void RandomNextTypeWooden()
+    {
+        int type = Random.Range(1, 4);
+        //Debug.Log("Type: " + type);
+        switch (type)
+        {
+            case 1:
+                m_treeBase = GameObject.FindGameObjectWithTag("TreeType1");
+                break;
+            case 2:
+                m_treeBase = GameObject.FindGameObjectWithTag("TreeType2");
+                break;
+            case 3:
+                m_treeBase = GameObject.FindGameObjectWithTag("TreeType3");
+                break;
         }
     }
 

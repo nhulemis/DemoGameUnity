@@ -7,6 +7,12 @@ TagManager:
   - Line
   - TreeBase
   - Building
+  - BuildingType1
+  - BuildingType3
+  - BuildingType2
+  - TreeType1
+  - TreeType2
+  - TreeType3
   layers:
   - Default
   - TransparentFX
