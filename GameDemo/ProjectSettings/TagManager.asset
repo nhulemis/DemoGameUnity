@@ -13,6 +13,12 @@ TagManager:
   - TreeType1
   - TreeType2
   - TreeType3
+  - Balance
+  - target
+  - mark1
+  - mark2
+  - mark3
+  - mark4
   layers:
   - Default
   - TransparentFX

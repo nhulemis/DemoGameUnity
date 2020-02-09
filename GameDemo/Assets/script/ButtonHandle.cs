@@ -7,9 +7,7 @@ using UnityEngine.EventSystems;
 
 public class ButtonHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField]
-    private GameObject m_limitLine;
-
+    static public GameObject Limit;
     //[SerializeField]
     GameObject m_treeBase;
     GameObject m_buildingBase;
@@ -17,7 +15,6 @@ public class ButtonHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     private GameObject m_cube;
     private bool m_isHoldingTree;
     private bool m_isHoldingBuilding;
-    private Vector3 m_offset;
     private GameObject m_tree;
 
     private void Start()
@@ -27,38 +24,84 @@ public class ButtonHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         // m_startLine = GameObject.FindGameObjectWithTag("Line");
         RandomNextTypeWooden();
         RandomNextTypeBuilding();
+        //Debug.Log("SCWR: " + Screen.width * 3 / 5);
     }
     public void CreateTree()
     {
         m_tree = Instantiate(m_treeBase);
-        m_tree.transform.position = GetMouseWorldPosition();
+        m_tree.transform.position = GetMouseWorldPosition(0);
         // m_cube.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);        
     }
 
     public Vector3 GetMouseWorldPosition()
     {
         var mousePos = Input.mousePosition;
-        mousePos.z = m_limitLine.transform.position.z;
-        return Camera.main.ScreenToWorldPoint(mousePos);
+        var obj = GameObject.FindGameObjectWithTag("mark1").transform.position;
+        return obj;
+
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type">1 = right , 0 = left</param>
+    /// <returns></returns>
+    public Vector3 GetMouseWorldPosition(int type)
+    {
+        Vector3 objPos;
+        if (type == 1)
+        {
+            objPos = GameObject.FindGameObjectWithTag("mark3").transform.position;
+        }
+        else
+        {
+            objPos = GameObject.FindGameObjectWithTag("mark1").transform.position;
+        }
+        return objPos;
     }
 
     public void CreateBuilding()
     {
         //Debug.Log("Building");
         m_cube = Instantiate(m_buildingBase);
-        m_cube.transform.position = GetMouseWorldPosition();
+        m_cube.transform.position = GetMouseWorldPosition(1);
     }
 
     private void Update()
     {
+        var deltaMouseX = Input.GetAxis("Mouse X");
+        var deltaMouseY = Input.GetAxis("Mouse Y");
         if (m_isHoldingTree)
-        {
-            m_tree.transform.position = GetMouseWorldPosition();
+        {   
+            var limit1 = GameObject.FindGameObjectWithTag("mark1").transform.position;
+            var limit2 = GameObject.FindGameObjectWithTag("mark2").transform.position;
+            Vector3 pos = m_tree.transform.position + Vector3.right * deltaMouseX * 10 * Time.deltaTime;
+            pos.x = Limit2Constan(pos.x, limit1.x, limit2.x);
+            m_tree.transform.position = pos;
+           // Debug.Log("CurX: "+ pos.x + " Min: "+ limit1.x + " Max: "+limit2.x);
+            
         }
         else if (m_isHoldingBuilding)
         {
-            m_cube.transform.position = GetMouseWorldPosition();
+            var limit3 = GameObject.FindGameObjectWithTag("mark4").transform.position;
+            var limit4 = GameObject.FindGameObjectWithTag("mark3").transform.position;
+            Vector3 pos = m_cube.transform.position + Vector3.right * deltaMouseX * 10 * Time.deltaTime;
+            pos.x = Limit2Constan(pos.x, limit3.x, limit4.x);
+            m_cube.transform.position = pos;
         }
+    }
+
+    float Limit2Constan(float number, float min, float max)
+    {
+        if (number > max)
+        {
+            return max;
+        }
+        if (number < min)
+        {
+            return min;
+        }
+        return number;
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -92,7 +135,7 @@ public class ButtonHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         else if (m_isHoldingBuilding)
         {
             var collider = m_cube.GetComponent<Collider>();
-           var body = collider.attachedRigidbody;
+            var body = collider.attachedRigidbody;
             body.useGravity = true;
             m_isHoldingBuilding = false;
             RandomNextTypeBuilding();
